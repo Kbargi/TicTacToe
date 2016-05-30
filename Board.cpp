@@ -1,16 +1,19 @@
 #include "Logic.h"
 
-Board::Board(const int x, const int y, const int size/*pix*/) : m_size(size), xFieldsNum(x), yFieldsNum(y) {
+Board::Board(const int x, const int y, const int size /*pix*/)
+	: m_size(size), xFieldsNum(x), yFieldsNum(y) {
 	State s = State::FREE_ON;
 	for (int i = 0; i < xFieldsNum; ++i) {
 		for (int j = 0; j < yFieldsNum; ++j) {
-			m_fields.insert(std::pair<std::pair<int, int>, Field>(std::make_pair(i, j), Field(i, j, size, s)));
+			m_fields.insert(std::pair<std::pair<int, int>, Field>(
+				std::make_pair(i, j), Field(i, j, size, s)));
 			s = State::FREE_OFF;
 		}
 	}
 }
 Board::~Board() {
-	for (std::map<State, SDL_Surface*>::iterator it = m_graphs.begin(); it != m_graphs.end(); ++it) {
+	for (std::map<State, SDL_Surface*>::iterator it = m_graphs.begin();
+	it != m_graphs.end(); ++it) {
 		SDL_FreeSurface(it->second);
 		it->second = NULL;
 	}
@@ -94,27 +97,32 @@ WINNER Board::checkResult() {
 	}
 
 	res_x = res_o = 0;
-	if ((getState(2, 0) == State::CIRCLE_ON || getState(2, 0) == State::CIRCLE_OFF)
-		&& (getState(1, 1) == State::CIRCLE_ON || getState(1, 1) == State::CIRCLE_OFF)
-		&& (getState(0, 2) == State::CIRCLE_ON || getState(0, 2) == State::CIRCLE_OFF))
-	{
+	if ((getState(2, 0) == State::CIRCLE_ON ||
+		getState(2, 0) == State::CIRCLE_OFF) &&
+		(getState(1, 1) == State::CIRCLE_ON ||
+			getState(1, 1) == State::CIRCLE_OFF) &&
+		(getState(0, 2) == State::CIRCLE_ON ||
+			getState(0, 2) == State::CIRCLE_OFF)) {
 		setState(2, 0, State::CIRCLE_ON);
 		setState(1, 1, State::CIRCLE_ON);
 		setState(0, 2, State::CIRCLE_ON);
 		return WINNER::CIRC;
 	}
-	else if (
-		(getState(2, 0) == State::CROSS_ON || getState(2, 0) == State::CROSS_OFF)
-		&& (getState(1, 1) == State::CROSS_ON || getState(1, 1) == State::CROSS_OFF)
-		&& (getState(0, 2) == State::CROSS_ON || getState(0, 2) == State::CROSS_OFF))
-	{
+	else if ((getState(2, 0) == State::CROSS_ON ||
+		getState(2, 0) == State::CROSS_OFF) &&
+		(getState(1, 1) == State::CROSS_ON ||
+			getState(1, 1) == State::CROSS_OFF) &&
+		(getState(0, 2) == State::CROSS_ON ||
+			getState(0, 2) == State::CROSS_OFF)) {
 		setState(2, 0, State::CROSS_ON);
 		setState(1, 1, State::CROSS_ON);
 		setState(0, 2, State::CROSS_ON);
 		return WINNER::PLUS;
 	}
-	if (free) return WINNER::NOT_FINISHED;
-	else return WINNER::NONE;
+	if (free)
+		return WINNER::NOT_FINISHED;
+	else
+		return WINNER::NONE;
 }
 bool Board::init(std::string& path) {
 	std::string tPath = path;
@@ -136,7 +144,7 @@ void Board::reset() {
 	}
 	setState(0, 0, State::FREE_ON);
 }
-void Board::printBoard(SDL_Window* window, SDL_Surface *screen) {
+void Board::printBoard(SDL_Window* window, SDL_Surface* screen) {
 	if (!screen || !window) return;
 	for (int x = 0; x < xFieldsNum; ++x) {
 		for (int y = 0; y < yFieldsNum; ++y) {
@@ -145,12 +153,14 @@ void Board::printBoard(SDL_Window* window, SDL_Surface *screen) {
 	}
 }
 
-void Board::printField(SDL_Window* window, SDL_Surface *screen, int x, int y) {
+void Board::printField(SDL_Window* window, SDL_Surface* screen, int x, int y) {
 	if (!screen || !window) return;
 	SDL_Rect t;
 	Field& f = m_fields.at(std::make_pair(x, y));
 	SDL_Surface* s = m_graphs.at(f.getState());
-	if (!s) { return; }
+	if (!s) {
+		return;
+	}
 	t.x = f.getX() * f.getSize();
 	t.y = f.getY() * f.getSize();
 	SDL_BlitSurface(s, NULL, screen, &t);

@@ -15,6 +15,7 @@ public:
 	const int getWins();
 	bool move(std::shared_ptr<Board> board, SDL_Keycode event);
 	void reset();
+
 private:
 	std::shared_ptr<Logic> create(const std::string& name = std::string("Human"));
 	int winCounter;
